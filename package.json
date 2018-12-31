@@ -1,0 +1,20 @@
+{
+  "name": "productgrid",
+  "version": "1.0.0",
+  "description": "Filtering Products Grid by JS",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"open index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gash48/productGrid.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gash48/productGrid/issues"
+  },
+  "homepage": "https://github.com/gash48/productGrid#readme"
+}
