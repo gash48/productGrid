@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <!-- <link rel="shortcut icon" href="./assets/favicon.png" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
         integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="./styles.css" />
     <title>Product Grid</title>
 </head>
@@ -16,7 +16,163 @@
 <body>
     <noscript>You need to enable JavaScript to run this Page.</noscript>
 
-    <script src="./gridExercise.js"></script>
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a>
+                        Filters
+                    </a>
+                </li>
+                <li id="brand">
+                    <a href="#">Brands</a>
+                </li>
+                <li id="color">
+                    <a href="#">Colors</a>
+                </li>
+                <li id="sold_out">
+                    <a href="#">Availability</a>
+                </li>
+                <li id="resetAll">
+                    <a href="#"><i class="fa fa-refresh" aria-hidden="true"></i>Reset All</a>
+                </li>
+            </ul>
+
+        </div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <p style="margin:0;color:white">
+                    <a href="#menu-toggle" class="btn btn-secondary" id="menu-toggle">
+                        <i class="fa fa-filter" aria-hidden="true"></i>
+                    </a>
+                    Products
+                </p>
+            </div>
+
+            <div id="cardsContainer">
+                <div class="productCard" id="sampleCard" style="display: none">
+                    <img class="card-img-top" src="./assets/images/" alt="Card image" style="width:100%">
+                    <div class="card-body">
+                        <h5 class="card-title text-center"></h5>
+                    </div>
+                </div>
+                <div id="cardsAdder">
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    
+    <script src="dist/bundle.js" type="text/javascript"></script>
+    <!-- <script src="./gridExercise.js"></script> -->
+    <!-- <script>
+
+        $(document).ready(function () {
+
+            const filterObj = {
+                brand: [],
+                color: [],
+                sold_out: []
+            }
+
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+
+            $.getJSON("assets/productData.json", function (data) {
+                console.log(data);
+            }).done(function (data) {
+                let jqUtil = new JQUtil(data);
+            }).fail(function () {
+                console.log("Failed To Load JSON");
+            })
+
+            class JQUtil {
+                constructor(products) {
+                    this.filterObj = {
+                        brand: [],
+                        color: [],
+                        sold_out: []
+                    }
+                    this.products = products;
+                    this.addProducts(products);
+                    this.createFilterList();
+                    $('#resetAll').click((e)=>this.resetAll(e));
+                }
+
+                addProducts(products) {
+                    $('#cardsAdder').empty();
+                    products.map((ele, index) => {
+                        $('#sampleCard').clone(true).show().appendTo('#cardsAdder');
+                        $('.card-img-top').eq(index).attr('src', './assets/images/' + ele.url);
+                        $('.card-title').eq(index).html(ele.name);
+                    })
+                }
+
+                getUniqueFilters(inArr, prop) {
+                    let arr = inArr.map((ele) => ele[prop])
+                    var uniqueSet = new Set(arr);
+                    return [...uniqueSet];
+                }
+
+                createFilterList() {
+                    // console.log(Object.keys(this.filterObj));
+                    for (let i in this.filterObj) {
+                        console.log(i)
+                        this.createFilters(i);
+                    }
+                    $('.form-control').change((e) => this.filterChangeListener(e));
+                }
+
+                createFilters(prop, listClass = 'dynList') {
+                    let brands = this.getUniqueFilters(this.products, prop);
+                    let brandUl = $('<ul></ul>').attr({ 'class': listClass, 'id': prop + 'list' });
+                    $('#' + prop).append(brandUl);
+
+                    for (let i = 0; i < brands.length; i++) {
+                        let checkBox = $('<input />').attr({ 'type': 'checkbox', 'value': brands[i], 'name': prop, class: 'form-control' })
+                        let brandLi = $('<li></li>').html(checkBox).append(brands[i]);
+                        brandUl.append(brandLi);
+                    }
+                }
+
+                filterChangeListener(e) {
+                    if (e.target.checked) {
+                        this.filterObj[e.target.name].push(e.target.value);
+
+                    } else {
+                        this.filterObj[e.target.name] = this.filterObj[e.target.name].filter((ele) => ele != e.target.value)
+                    }
+
+                    let newProducts = this.combinedFilter(this.filterObj);
+                    this.addProducts(newProducts);
+                }
+
+                combinedFilter(obj) {
+                    let arr = [];
+                    for (let i in obj) {
+                        if (obj[i].length) {
+                            arr = this.products.filter(e => obj[i].includes(e[i]))
+                        }
+                    }
+                    return arr;
+                }
+
+                resetAll(e) {
+                    $('input:checkbox').prop('checked',false);
+                }
+            }
+
+        });
+
+    </script>  -->
 </body>
 
 </html>
