@@ -1,11 +1,12 @@
-const productUrl = 'assets/productData.json';
+/* eslint-disable no-console */
+/* eslint-disable no-undef */
+const getProductsData = () => {
+  const productUrl = 'assets/productData.json';
 
-export const getProductsData = () => {
-    return $.getJSON(productUrl, function () {
-        console.log("Url Found")
-    }).done(function (data) {
-        return data;
-    }).fail(function () {
-        return null;
-    })
-}
+  return $.getJSON(productUrl, () => {
+    console.log('Url Found');
+  }).done(data => data)
+    .fail(() => null);
+};
+
+export default getProductsData;

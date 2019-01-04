@@ -1,16 +1,18 @@
-import {getProductsData} from './apiService';
-import { ProductGrid } from './productGrid';
+/* eslint-disable no-new */
+/* eslint-disable no-undef */
+import getProductsData from './apiService';
+import ProductGrid from './productGrid';
+import { DOMCONSTANTS } from './appConstants';
 
-$(document).ready(function () {
+$(document).ready(() => {
+  $(DOMCONSTANTS.filterButtonSelector).click((e) => {
+    e.preventDefault();
+    $(DOMCONSTANTS.sideMenuSelector).toggleClass('toggled');
+  });
 
-    $("#menu-toggle").click(function (e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-
-    getProductsData().then((res)=>{
-        if(res){
-            let prodGrid = new ProductGrid(res);
-        }
-    });
-})
+  getProductsData().then((res) => {
+    if (res) {
+      new ProductGrid(res);
+    }
+  });
+});
