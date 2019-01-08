@@ -45,13 +45,19 @@ class ProductGrid {
 
   addProducts(products) {
     $(DOMCONSTANTS.productsContainerSelector).empty();
-    products.map((ele, index) => this.createProduct(ele, index));
-  }
-
-  createProduct(product, index) {
-    $(DOMCONSTANTS.cardCloneSelector).clone(true).show().appendTo(DOMCONSTANTS.productsContainerSelector);
-    $(DOMCONSTANTS.cardImageSelector).eq(index).attr('src', `./assets/images/${product.url}`);
-    $(DOMCONSTANTS.cardTitleSelector).eq(index).html(product.name);
+    const documentFragment = $(document.createDocumentFragment());
+    products.map((product) => {
+      const productCard = $('<div>').attr({ class: DOMCONSTANTS.productCardSelector });
+      const cardImage = $('<img>').attr({ class: DOMCONSTANTS.cardImageSelector, src: `./assets/images/${product.url}` });
+      const titleDiv = $('<div>').attr({ class: DOMCONSTANTS.cardTitleContainer });
+      const cardTitle = $('<h5>').attr({ class: `${DOMCONSTANTS.cardTitleSelector} text-center` }).html(product.name);
+      
+      titleDiv.append(cardTitle);
+      productCard.append(cardImage);
+      productCard.append(titleDiv);
+      documentFragment.append(productCard);
+    });
+    $(DOMCONSTANTS.productsContainerSelector).append(documentFragment);
   }
 
   createFilter(prop, products, listClass = DOMCONSTANTS.listClass) {
@@ -99,7 +105,7 @@ class ProductGrid {
       const paginationControl = $('<a>').attr({ class: DOMCONSTANTS.paginationControlSelector, id: `page${i + 1}`, title: i + 1 }).html(i + 1);
       documentFragment.append(paginationControl);
     }
-    $(`.${DOMCONSTANTS.paginationLabel}`).html(`Showing Page ${this.currentPage} of ${noOfPages} (${recordsPerPage} Products Per Page)`);
+    $(`.${DOMCONSTANTS.paginationLabel}`).html(this.getPaginationLabel(totalRecords, recordsPerPage));
     $(`.${DOMCONSTANTS.paginationControlBarSelector}`).append(documentFragment);
 
     $(`#page${this.currentPage}`).addClass(DOMCONSTANTS.selectedPageClass);
@@ -109,12 +115,11 @@ class ProductGrid {
   // All Listeners
   paginationControlListener(e, recordsPerPage, products, dir = true) {
     const newPage = dir ? parseInt(e.target.title) + this.currentPage : parseInt(e.target.title);
-    const noOfPages = Math.ceil(products.length / recordsPerPage);
     if ($(`#page${newPage}`).length) {
       $(`#page${this.currentPage}`).removeClass(DOMCONSTANTS.selectedPageClass);
       this.currentPage = newPage;
       this.addProducts(this.getPaginatedRecords((this.currentPage - 1) * recordsPerPage, recordsPerPage, products));
-      $(`.${DOMCONSTANTS.paginationLabel}`).html(`Showing Page ${this.currentPage} of ${noOfPages} (${recordsPerPage} Products Per Page)`);
+      $(`.${DOMCONSTANTS.paginationLabel}`).html(this.getPaginationLabel(products.length, recordsPerPage));
       $(`#page${this.currentPage}`).addClass(DOMCONSTANTS.selectedPageClass);
     }
   }
@@ -136,6 +141,7 @@ class ProductGrid {
         this.appliedFilters[name] = this.appliedFilters[name].filter(ele => ele !== value);
       }
     }
+    console.log(this.appliedFilters);
     this.refreshProducts();
   }
 
@@ -144,9 +150,18 @@ class ProductGrid {
     return products.slice(start, start + recordsPerPage);
   }
 
+  getPaginationLabel(totalRecords, recordsPerPage) {
+    const noOfPages = Math.ceil(totalRecords / recordsPerPage);
+    if (!noOfPages) {
+      return ('No Records To Display</b>');
+    }
+    return (`Page <b>${this.currentPage}</b> of <b>${noOfPages}</b>. Total Products<b> :- <b>${totalRecords}</b>`);
+  }
+
   // refresh Product List
   refreshProducts() {
     const filteredProducts = jqUtil.allinOnefilter(this.products, this.appliedFilters);
+    console.log(filteredProducts);
     const selectBoxValue = parseInt($(`#${DOMCONSTANTS.paginationSelectBox}`).val());
     const currentRecordsShowing = selectBoxValue || defaultRecordsToShow;
     this.currentPage = 1;

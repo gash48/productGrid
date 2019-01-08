@@ -1,8 +1,9 @@
 
 const DOMCONSTANTS = {
-  productsContainerSelector: '#cardsAdder',
-  cardCloneSelector: '#sampleCard',
-  cardImageSelector: '.card-img-top',
+  productsContainerSelector: '#cardsContainer',
+  cardTitleContainer: 'card-body',
+  productCardSelector: 'productCard',
+  cardImageSelector: 'card-img-top',
   cardTitleSelector: '.card-title',
   checkBoxClass: 'form-control',
   listClass: 'dynList',

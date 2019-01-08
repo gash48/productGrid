@@ -130,6 +130,10 @@
     cursor: pointer;
 }
 
+.card-img-top{
+  width: 100%;
+}
+
 .productCard:hover{
   opacity: 0.6;
 }

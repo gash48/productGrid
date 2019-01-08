@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-undef */
 
@@ -6,7 +7,6 @@ const allinOnefilter = (products = [], filter) => {
     if (filter[ele].length) {
       products = products.filter(e => filter[ele].includes(e[ele]));
     }
-    return null;
   });
   return products;
 };
