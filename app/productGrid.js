@@ -1,3 +1,5 @@
+/* eslint-disable no-lonely-if */
+/* eslint-disable object-curly-newline */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable array-callback-return */
 /* eslint-disable radix */
@@ -8,7 +10,7 @@
 /* eslint-disable no-undef */
 import jqUtil from './jqUtil';
 import {
-  DOMCONSTANTS, specialFilters, paginationValues, defaultRecordsToShow,
+  DOMCONSTANTS, specialFilters, paginationValues, defaultRecordsToShow, defaultFilters,
 } from './appConstants';
 
 class ProductGrid {
@@ -61,9 +63,12 @@ class ProductGrid {
       const checkBox = $('<input />').attr({
         type: 'checkbox', value: filterName, name: prop, class: DOMCONSTANTS.checkBoxClass,
       });
+      const radio = $('<input />').attr({
+        type: 'radio', value: filterName, name: prop, class: DOMCONSTANTS.checkBoxClass,
+      });
       let filterCheckBox = null;
       if (prop in specialFilters) {
-        filterCheckBox = $('<li>').html(checkBox).append(specialFilters[prop].getValue(parseInt(filterName)));
+        filterCheckBox = $('<li>').html(radio).append(specialFilters[prop].getValue(parseInt(filterName)));
       } else {
         filterCheckBox = $('<li>').html(checkBox).append(filterName);
       }
@@ -121,11 +126,15 @@ class ProductGrid {
   }
 
   filterChangeListener(e) {
-    const { checked, value, name } = e.target;
-    if (checked) {
-      this.appliedFilters[name].push(value);
+    const { checked, value, name, type } = e.target;
+    if (type === 'radio') {
+      this.appliedFilters[name] = [value];
     } else {
-      this.appliedFilters[name] = this.appliedFilters[name].filter(ele => ele !== value);
+      if (checked) {
+        this.appliedFilters[name].push(value);
+      } else {
+        this.appliedFilters[name] = this.appliedFilters[name].filter(ele => ele !== value);
+      }
     }
     this.refreshProducts();
   }
@@ -147,11 +156,7 @@ class ProductGrid {
   // Resetting Filters & DOM
   resetFilters() {
     $(`.${DOMCONSTANTS.checkBoxClass}`).prop('checked', false);
-    this.appliedFilters = {
-      brand: [],
-      color: [],
-      sold_out: [],
-    };
+    this.appliedFilters = defaultFilters;
     $(`#${DOMCONSTANTS.paginationSelectBox}`).val(0);
     this.paginationSelectChangeListener({ target: {} });
   }

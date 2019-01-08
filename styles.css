@@ -177,7 +177,7 @@ display:inline-flex;
 margin-bottom: 40px;
 }
 
-input[type=checkbox]{
+input[type=checkbox], input[type=radio]{
   width: 20%;
   float: right;
 }

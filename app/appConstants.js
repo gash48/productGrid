@@ -22,7 +22,7 @@ const DOMCONSTANTS = {
 const paginationValues = [0, 3, 6, 9];
 const defaultRecordsToShow = 4;
 
-const appliedFilters = {
+const defaultFilters = {
   brand: [],
   color: [],
   sold_out: [],
@@ -37,5 +37,5 @@ const specialFilters = {
 };
 
 export {
-  DOMCONSTANTS, specialFilters, paginationValues, defaultRecordsToShow, appliedFilters,
+  DOMCONSTANTS, specialFilters, paginationValues, defaultRecordsToShow, defaultFilters,
 };
