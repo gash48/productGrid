@@ -35,6 +35,9 @@
                 <li id="sold_out">
                     <a href="#">Availability</a>
                 </li>
+                <li id="pagination">
+                    <a href="#">Pagination</a>
+                </li>
                 <li id="resetAll">
                     <a href="#"><i class="fa fa-refresh" aria-hidden="true"></i>Reset All</a>
                 </li>
@@ -65,114 +68,22 @@
                 </div>
             </div>
 
+            <div class="container-fluid paginationBar text-center">
+                <div>
+                    <i class="fa fa-caret-left pagiCaret" title="-1" aria-hidden="true"></i>
+                    <div class="paginationControlContainer">
+                    </div>
+                    <i class="fa fa-caret-right pagiCaret" title="1" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <label class="pagiLabel"></label>
+                </div>
+
+            </div>
         </div>
-
     </div>
-    
-    <script src="dist/bundle.js" type="text/javascript"></script>
-    <!-- <script src="./gridExercise.js"></script> -->
-    <!-- <script>
-
-        $(document).ready(function () {
-
-            const filterObj = {
-                brand: [],
-                color: [],
-                sold_out: []
-            }
-
-            $("#menu-toggle").click(function (e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
-            });
-
-            $.getJSON("assets/productData.json", function (data) {
-                console.log(data);
-            }).done(function (data) {
-                let jqUtil = new JQUtil(data);
-            }).fail(function () {
-                console.log("Failed To Load JSON");
-            })
-
-            class JQUtil {
-                constructor(products) {
-                    this.filterObj = {
-                        brand: [],
-                        color: [],
-                        sold_out: []
-                    }
-                    this.products = products;
-                    this.addProducts(products);
-                    this.createFilterList();
-                    $('#resetAll').click((e)=>this.resetAll(e));
-                }
-
-                addProducts(products) {
-                    $('#cardsAdder').empty();
-                    products.map((ele, index) => {
-                        $('#sampleCard').clone(true).show().appendTo('#cardsAdder');
-                        $('.card-img-top').eq(index).attr('src', './assets/images/' + ele.url);
-                        $('.card-title').eq(index).html(ele.name);
-                    })
-                }
-
-                getUniqueFilters(inArr, prop) {
-                    let arr = inArr.map((ele) => ele[prop])
-                    var uniqueSet = new Set(arr);
-                    return [...uniqueSet];
-                }
-
-                createFilterList() {
-                    // console.log(Object.keys(this.filterObj));
-                    for (let i in this.filterObj) {
-                        console.log(i)
-                        this.createFilters(i);
-                    }
-                    $('.form-control').change((e) => this.filterChangeListener(e));
-                }
-
-                createFilters(prop, listClass = 'dynList') {
-                    let brands = this.getUniqueFilters(this.products, prop);
-                    let brandUl = $('<ul></ul>').attr({ 'class': listClass, 'id': prop + 'list' });
-                    $('#' + prop).append(brandUl);
-
-                    for (let i = 0; i < brands.length; i++) {
-                        let checkBox = $('<input />').attr({ 'type': 'checkbox', 'value': brands[i], 'name': prop, class: 'form-control' })
-                        let brandLi = $('<li></li>').html(checkBox).append(brands[i]);
-                        brandUl.append(brandLi);
-                    }
-                }
-
-                filterChangeListener(e) {
-                    if (e.target.checked) {
-                        this.filterObj[e.target.name].push(e.target.value);
-
-                    } else {
-                        this.filterObj[e.target.name] = this.filterObj[e.target.name].filter((ele) => ele != e.target.value)
-                    }
-
-                    let newProducts = this.combinedFilter(this.filterObj);
-                    this.addProducts(newProducts);
-                }
-
-                combinedFilter(obj) {
-                    let arr = [];
-                    for (let i in obj) {
-                        if (obj[i].length) {
-                            arr = this.products.filter(e => obj[i].includes(e[i]))
-                        }
-                    }
-                    return arr;
-                }
-
-                resetAll(e) {
-                    $('input:checkbox').prop('checked',false);
-                }
-            }
-
-        });
-
-    </script>  -->
+    <script src="dist/bundle.js" type="text/javascript">
+    </script>
 </body>
 
 </html>

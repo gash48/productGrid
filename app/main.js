@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import getProductsData from './apiService';
 import ProductGrid from './productGrid';
-import { DOMCONSTANTS } from './appConstants';
+import { DOMCONSTANTS, appliedFilters } from './appConstants';
 
 $(document).ready(() => {
   $(DOMCONSTANTS.filterButtonSelector).click((e) => {
@@ -12,7 +12,7 @@ $(document).ready(() => {
 
   getProductsData().then((res) => {
     if (res) {
-      new ProductGrid(res);
+      new ProductGrid(res, appliedFilters);
     }
   });
 });
