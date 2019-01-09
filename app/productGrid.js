@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-lonely-if */
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-trailing-spaces */
@@ -10,54 +12,57 @@
 /* eslint-disable no-undef */
 import jqUtil from './jqUtil';
 import {
-  DOMCONSTANTS, specialFilters, paginationValues, defaultRecordsToShow, defaultFilters,
+  DOMCONSTANTS, specialFilters, paginationValues, defaultRecordsToShow, defaultFilters, sortingValues,
 } from './appConstants';
 
 class ProductGrid {
   constructor(products, appliedFilters) {
     this.appliedFilters = appliedFilters;
+    this.fetchedProducts = products;
     this.products = products;
     this.currentPage = 1;
 
-    // ------Inits Filters & Pagination -------- //
+    // ------ Inits Filters, Pagination & Sorting -------- //
     this.createFilterList();
     this.createPaginationOptions();
+    this.createSortingOptions();
     this.initPagination(this.products, defaultRecordsToShow);
-    // -------------- //
+    // --------------------------------------------------- //
 
     // Reset Filter Event Listener
     $(DOMCONSTANTS.resetButtonSelector).click(e => this.resetFilters(e));
   }
 
+  // ------------ Creates Filters, Sorting, Pagination Controls -------------- //
   createFilterList() {
     Object.keys(this.appliedFilters).map(ele => this.createFilter(ele, this.products));
     $(`.${DOMCONSTANTS.checkBoxClass}`).change(e => this.filterChangeListener(e));
   }
 
-  initPagination(products, recordsPerPage = defaultRecordsToShow, start = 0) {
-    this.resetPaginationDOM();
-    this.createPaginationControls(recordsPerPage, products.length);
-    this.addProducts(this.getPaginatedRecords(start, recordsPerPage, products));
-    $(`.${DOMCONSTANTS.paginationSelectBox}`).change(e => this.paginationSelectChangeListener(e, products));
-    $(`.${DOMCONSTANTS.paginationCarets}`).click(e => this.paginationControlListener(e, recordsPerPage, products));
-    $(`.${DOMCONSTANTS.paginationControlSelector}`).click(e => this.paginationControlListener(e, recordsPerPage, products, false));
+  createSortingOptions() {
+    const documentFragment = $(document.createDocumentFragment());
+    const sortingSelectBox = $('<select>').attr({ class: DOMCONSTANTS.sortingSelectBox, name: DOMCONSTANTS.sortingSelectBox, id: DOMCONSTANTS.sortingSelectBox });
+
+    sortingValues.map((sorts) => {
+      const option = $('<option>').attr({ class: DOMCONSTANTS.sortingOptionSelector }).val(sorts).html(sorts === '-1' ? 'Sort By' : `Sort By ${sorts}`);
+      sortingSelectBox.append(option);
+    });
+    documentFragment.append(sortingSelectBox);
+    $(`#${DOMCONSTANTS.sortingContainerSelector}`).append(documentFragment);
+
+    $(`#${DOMCONSTANTS.sortingSelectBox}`).change(e => this.sortingChangeListener(e));
   }
 
-  addProducts(products) {
-    $(DOMCONSTANTS.productsContainerSelector).empty();
+  createPaginationOptions() {
     const documentFragment = $(document.createDocumentFragment());
-    products.map((product) => {
-      const productCard = $('<div>').attr({ class: DOMCONSTANTS.productCardSelector });
-      const cardImage = $('<img>').attr({ class: DOMCONSTANTS.cardImageSelector, src: `./assets/images/${product.url}` });
-      const titleDiv = $('<div>').attr({ class: DOMCONSTANTS.cardTitleContainer });
-      const cardTitle = $('<h5>').attr({ class: `${DOMCONSTANTS.cardTitleSelector} text-center` }).html(product.name);
-      
-      titleDiv.append(cardTitle);
-      productCard.append(cardImage);
-      productCard.append(titleDiv);
-      documentFragment.append(productCard);
+    const paginationSelectBox = $('<select>').attr({ class: DOMCONSTANTS.paginationSelectBox, name: DOMCONSTANTS.paginationSelectBox, id: DOMCONSTANTS.paginationSelectBox });
+
+    paginationValues.map((pages) => {
+      const option = $('<option>').attr({ class: DOMCONSTANTS.paginationOptionSelector }).val(pages).html(pages > 0 ? pages : `Default (${defaultRecordsToShow})`);
+      paginationSelectBox.append(option);
     });
-    $(DOMCONSTANTS.productsContainerSelector).append(documentFragment);
+    documentFragment.append(paginationSelectBox);
+    $(`#${DOMCONSTANTS.paginationContainerSelector}`).append(documentFragment);
   }
 
   createFilter(prop, products, listClass = DOMCONSTANTS.listClass) {
@@ -85,18 +90,6 @@ class ProductGrid {
     $(`#${prop}`).append(documentFragment);
   }
 
-  createPaginationOptions() {
-    const documentFragment = $(document.createDocumentFragment());
-    const paginationSelectBox = $('<select>').attr({ class: DOMCONSTANTS.paginationSelectBox, name: DOMCONSTANTS.paginationSelectBox, id: DOMCONSTANTS.paginationSelectBox });
-
-    paginationValues.map((pages) => {
-      const option = $('<option>').attr({ class: DOMCONSTANTS.paginationOptionSelector }).val(pages).html(pages > 0 ? pages : `Default (${defaultRecordsToShow})`);
-      paginationSelectBox.append(option);
-    });
-    documentFragment.append(paginationSelectBox);
-    $(`#${DOMCONSTANTS.paginationContainerSelector}`).append(documentFragment);
-  }
-
   createPaginationControls(recordsPerPage, totalRecords) {
     const noOfPages = Math.ceil(totalRecords / recordsPerPage);
     const documentFragment = $(document.createDocumentFragment());
@@ -111,8 +104,46 @@ class ProductGrid {
     $(`#page${this.currentPage}`).addClass(DOMCONSTANTS.selectedPageClass);
   }
 
+  // ------------ -- ------------------------------------- -------------- //
 
-  // All Listeners
+  // INitialize Pagination and add refresh Products
+  initPagination(products, recordsPerPage = defaultRecordsToShow, start = 0) {
+    this.resetPaginationDOM();
+    this.createPaginationControls(recordsPerPage, products.length);
+    this.addProducts(this.getPaginatedRecords(start, recordsPerPage, products));
+    $(`.${DOMCONSTANTS.paginationSelectBox}`).change(e => this.paginationSelectChangeListener(e, products));
+    $(`.${DOMCONSTANTS.paginationCarets}`).click(e => this.paginationControlListener(e, recordsPerPage, products));
+    $(`.${DOMCONSTANTS.paginationControlSelector}`).click(e => this.paginationControlListener(e, recordsPerPage, products, false));
+  }
+
+  // Add Products
+  addProducts(products) {
+    $(DOMCONSTANTS.productsContainerSelector).empty();
+    const documentFragment = $(document.createDocumentFragment());
+    products.map((product) => {
+      const productCard = $('<div>').attr({ class: DOMCONSTANTS.productCardSelector });
+      const cardImage = $('<img>').attr({ class: DOMCONSTANTS.cardImageSelector, src: `./assets/images/${product.url}` });
+      const titleDiv = $('<div>').attr({ class: DOMCONSTANTS.cardTitleContainer });
+      const cardTitle = $('<h5>').attr({ class: `${DOMCONSTANTS.cardTitleSelector} text-center` }).html(product.name);
+
+      titleDiv.append(cardTitle);
+      productCard.append(cardImage);
+      productCard.append(titleDiv);
+      documentFragment.append(productCard);
+    });
+    $(DOMCONSTANTS.productsContainerSelector).append(documentFragment);
+  }
+
+  // Refresh Products List
+  refreshProducts() {
+    const filteredProducts = jqUtil.allinOnefilter(this.products, this.appliedFilters);
+    const selectBoxValue = parseInt($(`#${DOMCONSTANTS.paginationSelectBox}`).val());
+    const currentRecordsShowing = selectBoxValue || defaultRecordsToShow;
+    this.currentPage = 1;
+    this.initPagination(filteredProducts, currentRecordsShowing);
+  }
+
+  // -------------------------- All Listeners -------------------------- //
   paginationControlListener(e, recordsPerPage, products, dir = true) {
     const newPage = dir ? parseInt(e.target.title) + this.currentPage : parseInt(e.target.title);
     if ($(`#page${newPage}`).length) {
@@ -141,9 +172,15 @@ class ProductGrid {
         this.appliedFilters[name] = this.appliedFilters[name].filter(ele => ele !== value);
       }
     }
-    console.log(this.appliedFilters);
     this.refreshProducts();
   }
+
+  sortingChangeListener(e) {
+    const sortingOption = e.target.value;
+    this.products = sortingOption !== '-1' ? jqUtil.getSortedArray(this.products, sortingOption) : this.fetchedProducts;
+    this.refreshProducts();
+  }
+  // -------------------------  ---------- ----------------------------  //
 
   // Slices Paginated Records
   getPaginatedRecords(start = 0, recordsPerPage = defaultRecordsToShow, products = this.products) {
@@ -153,27 +190,18 @@ class ProductGrid {
   getPaginationLabel(totalRecords, recordsPerPage) {
     const noOfPages = Math.ceil(totalRecords / recordsPerPage);
     if (!noOfPages) {
-      return ('No Records To Display</b>');
+      return ('<b>No Records To Display</b>');
     }
     return (`Page <b>${this.currentPage}</b> of <b>${noOfPages}</b>. Total Products<b> :- <b>${totalRecords}</b>`);
   }
 
-  // refresh Product List
-  refreshProducts() {
-    const filteredProducts = jqUtil.allinOnefilter(this.products, this.appliedFilters);
-    console.log(filteredProducts);
-    const selectBoxValue = parseInt($(`#${DOMCONSTANTS.paginationSelectBox}`).val());
-    const currentRecordsShowing = selectBoxValue || defaultRecordsToShow;
-    this.currentPage = 1;
-    this.initPagination(filteredProducts, currentRecordsShowing);
-  }
-
-  // Resetting Filters & DOM
+  // ----------------------- Resetting Filters, Sorting, Pagination & DOM -------- //
   resetFilters() {
     $(`.${DOMCONSTANTS.checkBoxClass}`).prop('checked', false);
     this.appliedFilters = defaultFilters;
     $(`#${DOMCONSTANTS.paginationSelectBox}`).val(0);
-    this.paginationSelectChangeListener({ target: {} });
+    this.paginationSelectChangeListener({ target: {} }, this.fetchedProducts);
+    $(`#${DOMCONSTANTS.sortingSelectBox}`).val('-1');
   }
 
   resetPaginationDOM() {
@@ -183,6 +211,8 @@ class ProductGrid {
     $(`.${DOMCONSTANTS.paginationControlSelector}`).off();
     $(`#page${this.currentPage}`).removeClass(DOMCONSTANTS.selectedPageClass);
   }
+
+  // -------------------------  ---------- ----------------------------  //
 }
 
 export default ProductGrid;

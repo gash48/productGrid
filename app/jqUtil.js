@@ -1,3 +1,5 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-else-return */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-undef */
@@ -17,6 +19,17 @@ const getUniqueFilters = (inArr, prop) => {
   return [...uniqueSet];
 };
 
+const getSortedArray = (inArr = [], prop) => {
+  return inArr.sort((a, b) => {
+    if (a[prop] > b[prop]) {
+      return 1;
+    } else if (a[prop] < b[prop]) {
+      return -1;
+    }
+    return 0;
+  });
+};
+
 const getUniquePropArray = (inArr, uniqueProp) => {
   const propArr = [];
   return inArr.filter((ele) => {
@@ -32,6 +45,7 @@ const jqUtil = {
   allinOnefilter,
   getUniqueFilters,
   getUniquePropArray,
+  getSortedArray,
 };
 
 export default jqUtil;
