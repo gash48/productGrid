@@ -33,7 +33,7 @@ class ProductGrid {
     // Reset Filter Event Listener
     $(DOMCONSTANTS.resetButtonSelector).click(e => this.resetAddons(e));
     // Hash Event Listener
-    $(window).on('hashchange', e => this.hashChangeListener(e));
+    // $(window).on('hashchange', e => this.hashChangeListener(e));
   }
 
   // INitialize Filters, Pagination, Sorting and adds Products
