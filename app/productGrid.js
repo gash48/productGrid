@@ -81,7 +81,7 @@ class ProductGrid {
     this.domUtil.resetPaginationDOM(this.currentPage);
     this.domUtil.createPaginationControls(recordsPerPage, products.length, this.currentPage);
     this.addProducts(this.getPaginatedRecords(offset, recordsPerPage, products), recordsPerPage);
-    // Sets Listeners On Pagi Controls
+    // Sets Listeners On Pagination Controls
     $(DOMACCESS.pagination.selectBox).change(e => this.paginationSelectChangeListener(e, products));
     $(DOMACCESS.pagination.carets).click(e => this.paginationControlListener(e, recordsPerPage, products));
     $(DOMACCESS.pagination.controls).click(e => this.paginationControlListener(e, recordsPerPage, products, false));
@@ -114,6 +114,7 @@ class ProductGrid {
     const currentRecordsShowing = parseInt($(DOMACCESS.pagination.selectBox).val(), 10);
     const offset = (currentPage - 1) * currentRecordsShowing;
     this.currentPage = currentPage;
+
     this.initPagination(filteredProducts, currentRecordsShowing, offset);
   }
 
@@ -158,11 +159,14 @@ class ProductGrid {
   }
 
   hashChangeListener(e) {
-    const options = jqUtil.getDecodedFilterFromUrl(e.target.location.hash);
-    this.currentPage = options.page;
-    this.currentSort = options.sort;
-    this.appliedFilters = options.filters;
-    this.setAddons(options.rpp);
+    const { hash } = e.target.location;
+    if (hash) {
+      const options = jqUtil.getDecodedFilterFromUrl(e.target.location.hash);
+      this.currentPage = options.page;
+      this.currentSort = options.sort;
+      this.appliedFilters = options.filters;
+      this.setAddons(options.rpp);
+    }
   }
 
   hashChanger(recordsPerPage) {
@@ -172,10 +176,10 @@ class ProductGrid {
   // ----------------------- Resetting Filters, Sorting, Pagination & DOM -------- //
   resetAddons() {
     this.products = this.fetchedProducts;
+    this.appliedFilters = defaultFilters;
     $(DOMACCESS.sorting.selectBox).val('-1');
     $(DOMACCESS.pagination.selectBox).val(defaultRecordsToShow);
     $(DOMACCESS.filterOptions).prop('checked', false).change();
-    this.appliedFilters = defaultFilters;
   }
 
   // Slices Paginated Records

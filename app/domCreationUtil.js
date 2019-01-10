@@ -13,7 +13,6 @@ class DOMManipulator {
   createSortingOptions(sortingListener) {
     const documentFragment = $(document.createDocumentFragment());
     const sortingSelectBox = $('<select>').attr({ class: DOMCLASSES.sortingSelectBox, [DOM_DATA_ATTR]: 'sortingSelectBox' });
-
     sortingValues.map((sorts) => {
       const option = $('<option>').val(sorts).html(sorts === '-1' ? 'Sort By' : `Sort By ${sorts}`);
       sortingSelectBox.append(option);
