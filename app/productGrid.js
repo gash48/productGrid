@@ -176,10 +176,10 @@ class ProductGrid {
   // ----------------------- Resetting Filters, Sorting, Pagination & DOM -------- //
   resetAddons() {
     this.products = this.fetchedProducts;
-    this.appliedFilters = defaultFilters;
     $(DOMACCESS.sorting.selectBox).val('-1');
     $(DOMACCESS.pagination.selectBox).val(defaultRecordsToShow);
     $(DOMACCESS.filterOptions).prop('checked', false).change();
+    this.appliedFilters = defaultFilters;
   }
 
   // Slices Paginated Records
