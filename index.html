@@ -26,22 +26,22 @@
                         Filters
                     </a>
                 </li>
-                <li id="brand">
+                <li data-access="brand">
                     <a href="#">Brands</a>
                 </li>
-                <li id="color">
+                <li data-access="color">
                     <a href="#">Colors</a>
                 </li>
-                <li id="sold_out">
+                <li data-access="sold_out">
                     <a href="#">Availability</a>
                 </li>
-                <li id="pagination">
+                <li data-access="pagination">
                     <a href="#">Pagination</a>
                 </li>
-                <li id="sorting">
+                <li data-access="sorting">
                     <a href="#">Sorting</a>
                 </li>
-                <li id="resetAll">
+                <li data-access="resetAll">
                     <a href="#"><i class="fa fa-refresh" aria-hidden="true"></i>Reset All</a>
                 </li>
             </ul>
@@ -59,18 +59,18 @@
                 </p>
             </div>
 
-            <div id="cardsContainer">
+            <div data-access="productsContainer" id="cardsContainer">
             </div>
 
             <div class="container-fluid paginationBar text-center">
                 <div>
-                    <i class="fa fa-caret-left pagiCaret" title="-1" aria-hidden="true"></i>
-                    <div class="paginationControlContainer">
+                    <i class="fa fa-caret-left" data-access="paginationCarets" title="-1" aria-hidden="true"></i>
+                    <div data-access="paginationControlContainer" class="paginationControlContainer">
                     </div>
-                    <i class="fa fa-caret-right pagiCaret" title="1" aria-hidden="true"></i>
+                    <i class="fa fa-caret-right" data-access="paginationCarets" title="1" aria-hidden="true"></i>
                 </div>
                 <div>
-                    <label class="pagiLabel"></label>
+                    <label data-access="paginationLabel"></label>
                 </div>
 
             </div>

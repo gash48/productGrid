@@ -2,13 +2,13 @@
 /* eslint-disable no-undef */
 import getProductsData from './apiService';
 import ProductGrid from './productGrid';
-import { DOMCONSTANTS, defaultFilters } from './appConstants';
+import { defaultFilters, DOMACCESS } from './appConstants';
 import jqUtil from './jqUtil';
 
 $(document).ready(() => {
-  $(DOMCONSTANTS.filterButtonSelector).click((e) => {
+  $(DOMACCESS.filterButtonSelector).click((e) => {
     e.preventDefault();
-    $(DOMCONSTANTS.sideMenuSelector).toggleClass('toggled');
+    $(DOMACCESS.sideMenuSelector).toggleClass('toggled');
   });
 
   getProductsData().then((res) => {

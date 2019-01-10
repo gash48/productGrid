@@ -1,55 +1,55 @@
+/* eslint-disable max-len */
 /* eslint-disable no-plusplus */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-undef */
 import jqUtil from './jqUtil';
 import {
-  DOMCONSTANTS, sortingValues, paginationValues, defaultRecordsToShow, specialFilters,
+  DOM_DATA_ATTR, sortingValues, paginationValues, specialFilters, DOMCLASSES, DOMACCESS, DATA_ATTR,
 } from './appConstants';
 
 class DOMManipulator {
   // ------------ Creates Filters, Sorting, Pagination Controls -------------- //
   createSortingOptions(sortingListener) {
     const documentFragment = $(document.createDocumentFragment());
-    const sortingSelectBox = $('<select>').attr({ class: DOMCONSTANTS.sortingSelectBox, name: DOMCONSTANTS.sortingSelectBox, id: DOMCONSTANTS.sortingSelectBox });
+    const sortingSelectBox = $('<select>').attr({ class: DOMCLASSES.sortingSelectBox, [DOM_DATA_ATTR]: 'sortingSelectBox' });
 
     sortingValues.map((sorts) => {
-      const option = $('<option>').attr({ class: DOMCONSTANTS.sortingOptionSelector }).val(sorts).html(sorts === '-1' ? 'Sort By' : `Sort By ${sorts}`);
+      const option = $('<option>').val(sorts).html(sorts === '-1' ? 'Sort By' : `Sort By ${sorts}`);
       sortingSelectBox.append(option);
     });
     documentFragment.append(sortingSelectBox);
-    $(`#${DOMCONSTANTS.sortingContainerSelector}`).append(documentFragment);
-
-    $(`#${DOMCONSTANTS.sortingSelectBox}`).change(sortingListener);
+    $(DOMACCESS.sorting.container).append(documentFragment);
+    $(DOMACCESS.sorting.selectBox).change(sortingListener);
   }
 
   createPaginationOptions() {
     const documentFragment = $(document.createDocumentFragment());
-    const paginationSelectBox = $('<select>').attr({ class: DOMCONSTANTS.paginationSelectBox, name: DOMCONSTANTS.paginationSelectBox, id: DOMCONSTANTS.paginationSelectBox });
+    const paginationSelectBox = $('<select>').attr({ class: DOMCLASSES.paginationSelectBox, [DOM_DATA_ATTR]: 'paginationSelectBox' });
 
     paginationValues.map((pages) => {
-      const option = $('<option>').attr({ class: DOMCONSTANTS.paginationOptionSelector }).val(pages).html(pages > 0 ? pages : `Default (${defaultRecordsToShow})`);
+      const option = $('<option>').val(pages).html(pages);
       paginationSelectBox.append(option);
     });
     documentFragment.append(paginationSelectBox);
-    $(`#${DOMCONSTANTS.paginationContainerSelector}`).append(documentFragment);
+    $(DOMACCESS.pagination.container).append(documentFragment);
   }
 
-  createFilter(prop, products, listClass = DOMCONSTANTS.listClass) {
+  createFilter(prop, products, listClass = DOMCLASSES.filterContainer) {
     const documentFragment = $(document.createDocumentFragment());
     const filterValues = jqUtil.getUniqueFilters(products, prop);
-    const filterContainer = $('<ul>').attr({ class: listClass, id: `${prop}List` });
+    const filterContainer = $('<ul>').attr({ class: listClass, [DOM_DATA_ATTR]: `${prop}List` });
 
     filterValues.map((filterName) => {
       let filterCheckBox = null;
       if (prop in specialFilters) {
         const radio = $('<input />').attr({
-          type: 'radio', value: filterName, name: prop, class: DOMCONSTANTS.checkBoxClass,
+          type: 'radio', value: filterName, name: prop, class: DOMCLASSES.filterControls, [DOM_DATA_ATTR]: 'filterControl',
         });
         filterCheckBox = $('<li>').html(radio).append(specialFilters[prop].getValue(parseInt(filterName, 10)));
       } else {
         const checkBox = $('<input />').attr({
-          type: 'checkbox', value: filterName, name: prop, class: DOMCONSTANTS.checkBoxClass,
+          type: 'checkbox', value: filterName, name: prop, class: DOMCLASSES.filterControls, [DOM_DATA_ATTR]: 'filterControl',
         });
         filterCheckBox = $('<li>').html(checkBox).append(filterName);
       }
@@ -57,7 +57,7 @@ class DOMManipulator {
     });
 
     documentFragment.append(filterContainer);
-    $(`#${prop}`).append(documentFragment);
+    $(`[${DOM_DATA_ATTR}=${prop}]`).append(documentFragment);
   }
 
   createPaginationControls(recordsPerPage, totalRecords, currentPage) {
@@ -65,13 +65,15 @@ class DOMManipulator {
     const documentFragment = $(document.createDocumentFragment());
 
     for (let i = 0; i < noOfPages; i++) {
-      const paginationControl = $('<a>').attr({ class: DOMCONSTANTS.paginationControlSelector, id: `page${i + 1}`, title: i + 1 }).html(i + 1);
+      const paginationControl = $('<a>').attr({
+        class: DOMCLASSES.paginationControls, [DOM_DATA_ATTR]: 'paginationControls', [DATA_ATTR]: `page${i + 1}`, title: i + 1,
+      }).html(i + 1);
       documentFragment.append(paginationControl);
     }
-    $(`.${DOMCONSTANTS.paginationLabel}`).html(this.getPaginationLabel(totalRecords, recordsPerPage, currentPage));
-    $(`.${DOMCONSTANTS.paginationControlBarSelector}`).append(documentFragment);
+    $(DOMACCESS.pagination.label).html(this.getPaginationLabel(totalRecords, recordsPerPage, currentPage));
+    $(DOMACCESS.pagination.controlContainer).append(documentFragment);
 
-    $(`#page${currentPage}`).addClass(DOMCONSTANTS.selectedPageClass);
+    $(`[${DATA_ATTR}=page${currentPage}]`).addClass(DOMCLASSES.selectedPage);
   }
 
   getPaginationLabel(totalRecords, recordsPerPage, currentPage) {
@@ -83,11 +85,11 @@ class DOMManipulator {
   }
 
   resetPaginationDOM(currentPage) {
-    $(`.${DOMCONSTANTS.paginationControlBarSelector}`).empty();
-    $(`.${DOMCONSTANTS.paginationSelectBox}`).off();
-    $(`.${DOMCONSTANTS.paginationCarets}`).off();
-    $(`.${DOMCONSTANTS.paginationControlSelector}`).off();
-    $(`#page${currentPage}`).removeClass(DOMCONSTANTS.selectedPageClass);
+    $(DOMACCESS.pagination.controlContainer).empty();
+    $(DOMACCESS.pagination.selectBox).off();
+    $(DOMACCESS.pagination.carets).off();
+    $(DOMACCESS.pagination.controls).off();
+    $(`[${DATA_ATTR}=page${currentPage}]`).removeClass(DOMCLASSES.selectedPage);
   }
 }
 

@@ -1,34 +1,45 @@
 /* eslint-disable no-undef */
 
-// const DOM_DATA_ATTR = 'data-access';
-// $(`[${DOM_DATA_ATTR}=productsContainer]`)
+const DOM_DATA_ATTR = 'data-access';
+const DATA_ATTR = 'data-attr';
 
-const DOMCONSTANTS = {
-  productsContainerSelector: '#cardsContainer',
-  cardTitleContainer: 'card-body',
-  productCardSelector: 'productCard',
-  cardImageSelector: 'card-img-top',
-  cardTitleSelector: '.card-title',
-  checkBoxClass: 'form-control',
-  listClass: 'dynList',
-  filterButtonSelector: '#menu-toggle',
-  sideMenuSelector: '#wrapper',
-  resetButtonSelector: '#resetAll',
-  paginationContainerSelector: 'pagination',
-  paginationOptionSelector: 'paginationOption',
+// ONly FOr Styling PurPose
+const DOMCLASSES = {
+  productContainer: 'productCard',
+  productTitle: 'card-body',
+  productImage: 'card-img-top',
+  productName: 'text-center',
+  filterControls: 'form-control',
+  filterContainer: 'dynList',
   paginationSelectBox: 'paginationSelectBox',
-  paginationControlBarSelector: 'paginationControlContainer',
-  paginationControlSelector: 'paginationControlBox',
-  paginationCarets: 'pagiCaret',
-  paginationLabel: 'pagiLabel',
-  selectedPageClass: 'selectedPage',
-  sortingContainerSelector: 'sorting',
+  paginationControls: 'paginationControlBox',
+  selectedPage: 'selectedPage',
   sortingSelectBox: 'sortingSelectBox',
-  sortingOptionSelector: 'sortingOption',
 };
 
-const paginationValues = [0, 3, 6, 9];
-const defaultRecordsToShow = 4;
+const DOMACCESS = {
+  productContainer: `[${DOM_DATA_ATTR}=productsContainer]`,
+  filterOptions: `[${DOM_DATA_ATTR}=filterControl]`,
+  pagination: {
+    container: `[${DOM_DATA_ATTR}=pagination]`,
+    selectBox: `[${DOM_DATA_ATTR}=paginationSelectBox]`,
+    controlContainer: `[${DOM_DATA_ATTR}=paginationControlContainer]`,
+    controls: `[${DOM_DATA_ATTR}=paginationControls]`,
+    label: `[${DOM_DATA_ATTR}=paginationLabel]`,
+    carets: `[${DOM_DATA_ATTR}=paginationCarets]`,
+  },
+  sorting: {
+    container: `[${DOM_DATA_ATTR}=sorting]`,
+    selectBox: `[${DOM_DATA_ATTR}=sortingSelectBox]`,
+  },
+  resetButton: `[${DOM_DATA_ATTR}=resetAll]`,
+  sideMenuSelector: '#wrapper',
+  filterButtonSelector: '#menu-toggle',
+};
+
+// Pagintion & Sorting
+const paginationValues = [4, 3, 6, 9];
+const defaultRecordsToShow = paginationValues[0];
 const sortingValues = ['-1', 'name', 'brand', 'color'];
 
 const defaultFilters = {
@@ -46,6 +57,6 @@ const specialFilters = {
 };
 
 export {
-  DOMCONSTANTS, specialFilters, paginationValues, defaultRecordsToShow, defaultFilters,
-  sortingValues,
+  DOMCLASSES, DOMACCESS, DOM_DATA_ATTR, specialFilters, paginationValues,
+  defaultRecordsToShow, defaultFilters, sortingValues, DATA_ATTR,
 };

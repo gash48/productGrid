@@ -173,16 +173,8 @@ display:inline-flex;
   background-color: #00000038;
 }
 
-.pagiLabel{
-
-}
-
-#resetAll{
+[data-access=resetAll]{
   margin-top: 40px;
-}
-
-.sortingOption{
-  text-transform: capitalize;
 }
 
 #pagination{
