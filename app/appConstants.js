@@ -1,3 +1,7 @@
+/* eslint-disable no-undef */
+
+// const DOM_DATA_ATTR = 'data-access';
+// $(`[${DOM_DATA_ATTR}=productsContainer]`)
 
 const DOMCONSTANTS = {
   productsContainerSelector: '#cardsContainer',

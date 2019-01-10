@@ -1,5 +1,4 @@
 /* eslint-disable no-plusplus */
-/* eslint-disable radix */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-undef */
@@ -8,7 +7,7 @@ import {
   DOMCONSTANTS, sortingValues, paginationValues, defaultRecordsToShow, specialFilters,
 } from './appConstants';
 
-class DOMCreationClass {
+class DOMManipulator {
   // ------------ Creates Filters, Sorting, Pagination Controls -------------- //
   createSortingOptions(sortingListener) {
     const documentFragment = $(document.createDocumentFragment());
@@ -47,7 +46,7 @@ class DOMCreationClass {
         const radio = $('<input />').attr({
           type: 'radio', value: filterName, name: prop, class: DOMCONSTANTS.checkBoxClass,
         });
-        filterCheckBox = $('<li>').html(radio).append(specialFilters[prop].getValue(parseInt(filterName)));
+        filterCheckBox = $('<li>').html(radio).append(specialFilters[prop].getValue(parseInt(filterName, 10)));
       } else {
         const checkBox = $('<input />').attr({
           type: 'checkbox', value: filterName, name: prop, class: DOMCONSTANTS.checkBoxClass,
@@ -92,4 +91,4 @@ class DOMCreationClass {
   }
 }
 
-export default DOMCreationClass;
+export default DOMManipulator;

@@ -3,6 +3,7 @@
 import getProductsData from './apiService';
 import ProductGrid from './productGrid';
 import { DOMCONSTANTS, defaultFilters } from './appConstants';
+import jqUtil from './jqUtil';
 
 $(document).ready(() => {
   $(DOMCONSTANTS.filterButtonSelector).click((e) => {
@@ -12,7 +13,16 @@ $(document).ready(() => {
 
   getProductsData().then((res) => {
     if (res) {
-      new ProductGrid(res, defaultFilters);
+      const urlHash = window.location.hash;
+      let options = {};
+      if (urlHash) {
+        options = jqUtil.getDecodedFilterFromUrl(urlHash);
+      } else {
+        options = {
+          filters: defaultFilters, sort: '-1', page: 1,
+        };
+      }
+      new ProductGrid(res, options, Boolean(urlHash));
     }
   });
 });
