@@ -6,7 +6,7 @@
 /* eslint-disable no-undef */
 
 import {
-  defaultFilters, sortingValues, paginationValues, defaultRecordsToShow,
+  defaultFilters, sortingValues, defaultRecordsToShow,
 } from './appConstants';
 
 const allinOnefilter = (products = [], filter) => {
@@ -54,7 +54,7 @@ const getDecodedFilterFromUrl = (hash) => {
   return {
     filters: defaultFilters,
     sort: sortingValues[0],
-    page: paginationValues[0],
+    page: 1,
     rpp: defaultRecordsToShow,
   };
 };
