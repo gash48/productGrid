@@ -1,8 +1,13 @@
+
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-else-return */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-undef */
+
+import {
+  defaultFilters, sortingValues, paginationValues, defaultRecordsToShow,
+} from './appConstants';
 
 const allinOnefilter = (products = [], filter) => {
   Object.keys(filter).map((ele) => {
@@ -41,43 +46,27 @@ const getUniquePropArray = (inArr, uniqueProp) => {
   });
 };
 
-const getAppliedFilterString = (appliedFilter) => {
-  let filterString = '';
-  Object.keys(appliedFilter).map((filter) => {
-    const filterVal = appliedFilter[filter];
-    filterString += `#${filter}=${filterVal.length ? filterVal.join() : '-1'}`;
-  });
-  return filterString;
-};
-
-const getFiltersFromString = (str) => {
-  const filters = str.split('#');
-  const appliedFilters = {};
-  filters.map((filterStr) => {
-    if (filterStr) {
-      const filterKeys = filterStr.split('=');
-      if (filterKeys[1] === '-1') {
-        appliedFilters[filterKeys[0]] = [];
-      } else {
-        appliedFilters[filterKeys[0]] = filterKeys[1].split(',');
-      }
-    }
-  });
-  return appliedFilters;
-};
-
-const getDecodedFilterFromUrl = (url) => {
-  const addons = decodeURIComponent(url).split('&');
+const getDecodedFilterFromUrl = (hash) => {
+  if (hash) {
+    const hashString = decodeURIComponent(hash);
+    return JSON.parse(hashString.slice(1));
+  }
   return {
-    filters: getFiltersFromString(addons[0]),
-    sort: addons[1].split('=')[1],
-    rpp: parseInt(addons[2].split('=')[1], 10),
-    page: parseInt(addons[3].split('=')[1], 10),
+    filters: defaultFilters,
+    sort: sortingValues[0],
+    page: paginationValues[0],
+    rpp: defaultRecordsToShow,
   };
 };
 
 const getHashEncodedUrl = (appliedFilter = {}, sortProp = '-1', page = 1, recordsPerPage) => {
-  return (`${getAppliedFilterString(appliedFilter)}&sort=${sortProp}&rpp=${recordsPerPage}&page=${page}`);
+  const hashObject = {
+    filters: appliedFilter,
+    sort: sortProp,
+    page,
+    rpp: recordsPerPage,
+  };
+  return JSON.stringify(hashObject);
 };
 
 const jqUtil = {

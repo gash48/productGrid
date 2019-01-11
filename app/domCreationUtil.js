@@ -19,7 +19,7 @@ class DOMManipulator {
     });
     documentFragment.append(sortingSelectBox);
     $(DOMACCESS.sorting.container).append(documentFragment);
-    $(DOMACCESS.sorting.selectBox).change(sortingListener);
+    $(DOMACCESS.sorting.selectBox).on('change', sortingListener);
   }
 
   createPaginationOptions() {

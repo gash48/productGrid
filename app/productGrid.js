@@ -31,7 +31,7 @@ class ProductGrid {
     // --------------------------------------------------- //
 
     // Reset Filter Event Listener
-    $(DOMACCESS.resetButton).click(e => this.resetAddons(e));
+    $(DOMACCESS.resetButton).on('click', e => this.resetAddons(e));
     // Hash Event Listener
     $(window).on('hashchange', e => this.hashChangeListener(e));
   }
@@ -74,7 +74,7 @@ class ProductGrid {
 
   createFilterList() {
     Object.keys(this.appliedFilters).map(ele => this.domUtil.createFilter(ele, this.products));
-    $(DOMACCESS.filterOptions).change(e => this.filterChangeListener(e));
+    $(DOMACCESS.filterOptions).on('change', e => this.filterChangeListener(e));
   }
 
   initPagination(products, recordsPerPage = defaultRecordsToShow, offset = 0) {
@@ -82,9 +82,9 @@ class ProductGrid {
     this.domUtil.createPaginationControls(recordsPerPage, products.length, this.currentPage);
     this.addProducts(this.getPaginatedRecords(offset, recordsPerPage, products), recordsPerPage);
     // Sets Listeners On Pagination Controls
-    $(DOMACCESS.pagination.selectBox).change(e => this.paginationSelectChangeListener(e, products));
-    $(DOMACCESS.pagination.carets).click(e => this.paginationControlListener(e, recordsPerPage, products));
-    $(DOMACCESS.pagination.controls).click(e => this.paginationControlListener(e, recordsPerPage, products, false));
+    $(DOMACCESS.pagination.selectBox).on('change', e => this.paginationSelectChangeListener(e, products));
+    $(DOMACCESS.pagination.carets).on('click', e => this.paginationControlListener(e, recordsPerPage, products));
+    $(DOMACCESS.pagination.controls).on('click', e => this.paginationControlListener(e, recordsPerPage, products, false));
   }
 
   // Add Products
